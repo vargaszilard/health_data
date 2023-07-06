@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.econsult.health.HealthDataApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-07-06T15:29:30" hostname="macpros-MacBook-Pro.local" time="0.6">
+  <properties/>
+  <testcase name="contextLoads()" classname="com.econsult.health.HealthDataApplicationTests" time="0.6"/>
+  <system-out><![CDATA[17:29:25.760 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.econsult.health.HealthDataApplicationTests]: HealthDataApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+17:29:25.870 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.econsult.health.HealthDataApplication for test class com.econsult.health.HealthDataApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.1.1)
+
+2023-07-06T17:29:26.433+02:00  INFO 18093 --- [    Test worker] c.e.health.HealthDataApplicationTests    : Starting HealthDataApplicationTests using Java 17.0.7 with PID 18093 (started by macpro in /Users/macpro/Documents/java/health_data)
+2023-07-06T17:29:26.435+02:00  INFO 18093 --- [    Test worker] c.e.health.HealthDataApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2023-07-06T17:29:27.120+02:00  INFO 18093 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-07-06T17:29:27.190+02:00  INFO 18093 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 54 ms. Found 2 JPA repository interfaces.
+2023-07-06T17:29:27.580+02:00  INFO 18093 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-07-06T17:29:27.750+02:00  INFO 18093 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:c6aa6a67-bac5-454d-a836-e8acfa9a57b7 user=SA
+2023-07-06T17:29:27.752+02:00  INFO 18093 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-07-06T17:29:27.797+02:00  INFO 18093 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-07-06T17:29:27.838+02:00  INFO 18093 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.2.5.Final
+2023-07-06T17:29:27.840+02:00  INFO 18093 --- [    Test worker] org.hibernate.cfg.Environment            : HHH000406: Using bytecode reflection optimizer
+2023-07-06T17:29:27.965+02:00  INFO 18093 --- [    Test worker] o.h.b.i.BytecodeProviderInitiator        : HHH000021: Bytecode provider name : bytebuddy
+2023-07-06T17:29:28.108+02:00  INFO 18093 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2023-07-06T17:29:28.346+02:00  INFO 18093 --- [    Test worker] o.h.b.i.BytecodeProviderInitiator        : HHH000021: Bytecode provider name : bytebuddy
+2023-07-06T17:29:28.947+02:00  INFO 18093 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-07-06T17:29:28.998+02:00  INFO 18093 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-07-06T17:29:29.652+02:00  WARN 18093 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-07-06T17:29:30.059+02:00  INFO 18093 --- [    Test worker] c.e.health.HealthDataApplicationTests    : Started HealthDataApplicationTests in 4.016 seconds (process running for 5.207)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
