@@ -2,16 +2,22 @@ package com.econsult.health.mapper;
 
 import com.econsult.health.dto.ExaminationDto;
 import com.econsult.health.entity.Examination;
+import com.econsult.health.service.PatientService;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { PatientService.class })
 public interface ExaminationMapper {
+    // TODO: documentation, test
 
+    @Mapping(target = "patientId", source = "patient.id")
     ExaminationDto toExaminationDto(Examination examination);
 
-    Examination toExamination(ExaminationDto examinationDto);
-
     List<ExaminationDto> toExaminationDtoList(List<Examination> examinations);
+
+    // TODO: custom mapper
+    @Mapping(target = "patient", source = "patientId")
+    Examination toExamination(ExaminationDto examinationDto);
 }

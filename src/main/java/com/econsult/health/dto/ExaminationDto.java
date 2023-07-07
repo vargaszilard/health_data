@@ -1,6 +1,5 @@
 package com.econsult.health.dto;
 
-import com.econsult.health.entity.Patient;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,8 +14,10 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @ToString
 public class ExaminationDto {
+    // TODO: documentation
 
-    private Patient patient;
+    private long id;
+    private long patientId;
     private String commonCode;
     private String name;
     private String unitOfMeasure;

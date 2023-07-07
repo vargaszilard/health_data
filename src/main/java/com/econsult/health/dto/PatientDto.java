@@ -15,6 +15,9 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @ToString
 public class PatientDto {
+    // TODO: documentation
+
+    private Long id;
     private String firstName;
     private String lastName;
     private LocalDate birthDate;

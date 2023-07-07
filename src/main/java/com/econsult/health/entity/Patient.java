@@ -24,6 +24,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @ToString
 public class Patient {
+    // TODO: documentation
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class DataProvider {
+    // TODO: finish
 
     private final PatientRepository patientRepository;
     private final ExaminationRepository examinationRepository;

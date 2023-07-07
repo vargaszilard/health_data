@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-07-06T17:26:09+0200",
+    date = "2023-07-07T21:14:38+0200",
     comments = "version: 1.5.3.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.1.1.jar, environment: Java 17.0.7 (Homebrew)"
 )
 @Component
@@ -23,6 +23,7 @@ public class PatientMapperImpl implements PatientMapper {
             return null;
         }
 
+        Long id = null;
         String firstName = null;
         String lastName = null;
         LocalDate birthDate = null;
@@ -31,6 +32,7 @@ public class PatientMapperImpl implements PatientMapper {
         String ssnTypeDescription = null;
         String mothersName = null;
 
+        id = patient.getId();
         firstName = patient.getFirstName();
         lastName = patient.getLastName();
         birthDate = patient.getBirthDate();
@@ -39,7 +41,7 @@ public class PatientMapperImpl implements PatientMapper {
         ssnTypeDescription = patient.getSsnTypeDescription();
         mothersName = patient.getMothersName();
 
-        PatientDto patientDto = new PatientDto( firstName, lastName, birthDate, ssn, ssnType, ssnTypeDescription, mothersName );
+        PatientDto patientDto = new PatientDto( id, firstName, lastName, birthDate, ssn, ssnType, ssnTypeDescription, mothersName );
 
         return patientDto;
     }
@@ -52,6 +54,7 @@ public class PatientMapperImpl implements PatientMapper {
 
         Patient.PatientBuilder patient = Patient.builder();
 
+        patient.id( patientDto.getId() );
         patient.firstName( patientDto.getFirstName() );
         patient.lastName( patientDto.getLastName() );
         patient.birthDate( patientDto.getBirthDate() );

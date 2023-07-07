@@ -8,6 +8,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PatientMapper {
+    // TODO: documentation, test
 
     PatientDto toPatientDto(Patient patient);
 

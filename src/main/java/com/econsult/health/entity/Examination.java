@@ -25,12 +25,13 @@ import java.util.Objects;
 @NoArgsConstructor
 @ToString
 public class Examination {
+    // TODO: documentation
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "patient_id")
+    @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
     private String commonCode;
     private String name;

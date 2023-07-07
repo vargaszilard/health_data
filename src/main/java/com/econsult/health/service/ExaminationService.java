@@ -7,4 +7,12 @@ import java.util.List;
 public interface ExaminationService {
 
     List<ExaminationDto> getAllExaminations();
+
+    ExaminationDto getExaminationById(long id);
+
+    ExaminationDto createExamination(ExaminationDto examinationDto);
+
+    ExaminationDto updateExamination(Long examinationId, ExaminationDto examinationDto);
+
+    void deleteExamination(Long id);
 }
