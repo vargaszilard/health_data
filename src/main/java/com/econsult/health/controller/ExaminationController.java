@@ -27,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/examinations")
 public class ExaminationController {
-    // TODO: tests, documentation, other operations
+    // TODO: other operations
 
     private final ExaminationService examinationService;
 
@@ -45,7 +45,7 @@ public class ExaminationController {
             @ApiResponse(responseCode = "200", description = "Found examination", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExaminationDto.class))),
             @ApiResponse(responseCode = "404", description = "Examination not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class)))
     })
-    @GetMapping("/{id}")
+    @GetMapping("/{examinationId}")
     public ResponseEntity<ExaminationDto> getExaminationById(@PathVariable long examinationId) {
         return ResponseEntity.ok(examinationService.getExaminationById(examinationId));
     }
@@ -64,7 +64,7 @@ public class ExaminationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Examination updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExaminationDto.class)))
     })
-    @PutMapping
+    @PutMapping("/{examinationId}")
     public ResponseEntity<ExaminationDto> updateExamination(@PathVariable Long examinationId, @RequestBody ExaminationDto examinationDto) {
         ExaminationDto updatedExaminationDto = examinationService.updateExamination(examinationId, examinationDto);
         return new ResponseEntity<>(updatedExaminationDto, HttpStatus.OK);
@@ -74,9 +74,9 @@ public class ExaminationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Examination deleted")
     })
-    @DeleteMapping
-    public ResponseEntity<Void> deleteExaminationById(@PathVariable Long id) {
-        examinationService.deleteExamination(id);
+    @DeleteMapping("/{examinationId}")
+    public ResponseEntity<Void> deleteExaminationById(@PathVariable Long examinationId) {
+        examinationService.deleteExamination(examinationId);
         return ResponseEntity.noContent().build();
     }
 

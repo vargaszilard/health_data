@@ -50,15 +50,14 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientDto updatePatient(Long patientId, PatientDto patientDto) {
-        PatientDto updatedPatientDto = updatePatientDto(patientId, patientDto);
-        Patient updatedPatient = patientMapper.toPatient(updatedPatientDto);
+        Patient updatedPatient = updatePatientDto(patientId, patientDto);
         updatedPatient = patientRepository.save(updatedPatient);
         updatedPatient.setId(patientId);
         return patientMapper.toPatientDto(updatedPatient);
     }
 
-    private PatientDto updatePatientDto(Long patientId, PatientDto patientDto) {
-        PatientDto updatedPatientDto = getPatientById(patientId);
+    private Patient updatePatientDto(Long patientId, PatientDto patientDto) {
+        Patient updatedPatientDto = findById(patientId);
         updatedPatientDto.setFirstName(patientDto.getFirstName());
         updatedPatientDto.setLastName(patientDto.getLastName());
         updatedPatientDto.setBirthDate(patientDto.getBirthDate());

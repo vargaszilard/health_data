@@ -10,14 +10,12 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = { PatientService.class })
 public interface ExaminationMapper {
-    // TODO: documentation, test
 
     @Mapping(target = "patientId", source = "patient.id")
     ExaminationDto toExaminationDto(Examination examination);
 
     List<ExaminationDto> toExaminationDtoList(List<Examination> examinations);
 
-    // TODO: custom mapper
     @Mapping(target = "patient", source = "patientId")
     Examination toExamination(ExaminationDto examinationDto);
 }

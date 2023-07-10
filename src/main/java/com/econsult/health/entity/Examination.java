@@ -17,6 +17,9 @@ import org.hibernate.Hibernate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * An entity that represents an examination of a patient.
+ */
 @Entity
 @Getter
 @Setter
@@ -25,13 +28,13 @@ import java.util.Objects;
 @NoArgsConstructor
 @ToString
 public class Examination {
-    // TODO: documentation
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
+//    @Cascade(CascadeType.MERGE)
     private Patient patient;
     private String commonCode;
     private String name;

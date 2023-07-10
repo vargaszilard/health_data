@@ -1,7 +1,14 @@
 package com.econsult.health.controller;
 
 import com.econsult.health.dto.PatientDto;
+import com.econsult.health.exception.EntityNotFoundException;
 import com.econsult.health.service.PatientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,35 +27,56 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/patients")
 public class PatientController {
-    // TODO: tests, documentation, other operations
+    // TODO: other operations
 
     private final PatientService patientService;
 
+    @Operation(summary = "Get all patients")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of all patients", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PatientDto.class))))
+    })
     @GetMapping
     public ResponseEntity<List<PatientDto>> getAllPatients() {
         return ResponseEntity.ok(patientService.getAllPatients());
     }
 
-    @GetMapping("/{id}")
+    @Operation(summary = "Get a patient by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found patient", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PatientDto.class))),
+            @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class)))
+    })
+    @GetMapping("/{patientId}")
     public ResponseEntity<PatientDto> getPatientById(@PathVariable long patientId) {
         return ResponseEntity.ok(patientService.getPatientById(patientId));
     }
 
+    @Operation(summary = "Add a patient")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Patient added", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PatientDto.class)))
+    })
     @PostMapping
     public ResponseEntity<PatientDto> createPatient(@RequestBody PatientDto patientDto) {
         PatientDto savedPatient = patientService.createPatient(patientDto);
         return ResponseEntity.ok(savedPatient);
     }
 
-    @PutMapping
-    public ResponseEntity<PatientDto> updateExamination(@PathVariable Long patientId, @RequestBody PatientDto patientDto) {
+    @Operation(summary = "Update a patient")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Patient updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PatientDto.class)))
+    })
+    @PutMapping("/{patientId}")
+    public ResponseEntity<PatientDto> updatePatient(@PathVariable Long patientId, @RequestBody PatientDto patientDto) {
         PatientDto updatedPatientDto = patientService.updatePatient(patientId, patientDto);
         return new ResponseEntity<>(updatedPatientDto, HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deletePatientById(@PathVariable Long id) {
-        patientService.deletePatient(id);
+    @Operation(summary = "Delete a patient")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Patient deleted")
+    })
+    @DeleteMapping("/{patientId}")
+    public ResponseEntity<Void> deletePatientById(@PathVariable Long patientId) {
+        patientService.deletePatient(patientId);
         return ResponseEntity.noContent().build();
     }
 }

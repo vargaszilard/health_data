@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class DataProvider {
-    // TODO: finish
+    // TODO: replace with data.sql, finish
 
     private final PatientRepository patientRepository;
     private final ExaminationRepository examinationRepository;
@@ -30,14 +30,16 @@ public class DataProvider {
         Patient patient2 = createPatient("TempFirst2", "TempLast2", LocalDate.of(2023, 1, 1),
                 "NB", SsnType.EGYEB, "DIAK", "motherName2");
 
+        patient1 = patientRepository.save(patient1);
+        patient2 = patientRepository.save(patient2);
+
         Examination examination1 = createExamination(patient1, "com", "name", "cm",
                 "10", LocalDateTime.now(), LocalDateTime.now(), "header");
 
         Examination examination2 = createExamination(patient2, "com2", "name2", "cm2",
                 "12", LocalDateTime.now(), LocalDateTime.now(), "header2");
 
-        patientRepository.save(patient1);
-        patientRepository.save(patient2);
+
         examinationRepository.save(examination1);
         examinationRepository.save(examination2);
     }

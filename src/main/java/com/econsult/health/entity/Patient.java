@@ -1,10 +1,13 @@
 package com.econsult.health.entity;
 
 import com.econsult.health.entity.enums.SsnType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +18,11 @@ import org.hibernate.Hibernate;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
+/**
+ * An entity that represents a real life patient.
+ */
 @Entity
 @Getter
 @Setter
@@ -24,7 +31,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @ToString
 public class Patient {
-    // TODO: documentation
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +42,8 @@ public class Patient {
     private SsnType ssnType;
     private String ssnTypeDescription;
     private String mothersName;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy="patient")
+    private Set<Examination> examinations;
 
     @Override
     public boolean equals(Object o) {
