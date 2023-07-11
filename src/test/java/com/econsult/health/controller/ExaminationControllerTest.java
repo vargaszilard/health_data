@@ -1,6 +1,7 @@
 package com.econsult.health.controller;
 
 import com.econsult.health.dto.ExaminationDto;
+import com.econsult.health.exception.EntityNotFoundException;
 import com.econsult.health.service.ExaminationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,16 @@ class ExaminationControllerTest {
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/examinations/{examinationId}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
+    void getExaminationById_examinationNotExists_returnsOKAndExamination() throws Exception {
+        //given
+        when(examinationService.getExaminationById(1)).thenThrow(new EntityNotFoundException("Entity not found"));
+        //when
+        //then
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/examinations/{examinationId}", 1L))
+                .andExpect(status().isNotFound());
     }
 
     @Test

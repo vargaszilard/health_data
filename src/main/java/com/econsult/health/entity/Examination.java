@@ -34,7 +34,6 @@ public class Examination {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
-//    @Cascade(CascadeType.MERGE)
     private Patient patient;
     private String commonCode;
     private String name;

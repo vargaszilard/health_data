@@ -17,6 +17,7 @@ import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -40,10 +41,12 @@ public class Patient {
     private LocalDate birthDate;
     private String ssn;
     private SsnType ssnType;
-    private String ssnTypeDescription;
+    @Builder.Default
+    private String ssnTypeDescription = "";
     private String mothersName;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy="patient")
-    private Set<Examination> examinations;
+    @Builder.Default
+    private Set<Examination> examinations = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
