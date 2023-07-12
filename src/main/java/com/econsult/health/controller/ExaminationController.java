@@ -89,4 +89,14 @@ public class ExaminationController {
         return ResponseEntity.ok(savedExaminations);
     }
 
+    @Operation(summary = "Get a Patient's all results")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Results retireved", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class)))),
+            @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class)))
+    })
+    @GetMapping("/results/{patientId}")
+    public ResponseEntity<List<String>> getPatientsResults(@PathVariable long patientId) {
+        List<String> results = examinationService.getResults(patientId);
+        return ResponseEntity.ok(results);
+    }
 }

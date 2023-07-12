@@ -17,4 +17,6 @@ public interface ExaminationService {
     void deleteExamination(Long id);
 
     List<ExaminationDto> createMultipleExaminations(ExaminationDto[] examinationDto);
+
+    List<String> getResults(long patientId);
 }

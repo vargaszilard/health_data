@@ -98,6 +98,12 @@ public class PatientServiceImpl implements PatientService {
         return patientMapper.toPatientDto(patient);
     }
 
+    @Override
+    public boolean existPatientById(long patientId) {
+        return patientRepository.existsById(patientId);
+    }
+
+
     private Patient updatePatientDto(Long patientId, PatientDto patientDto) {
         Patient updatedPatient = findById(patientId);
         updatedPatient.setFirstName(patientDto.getFirstName());

@@ -93,6 +93,20 @@ public class ExaminationServiceImpl implements ExaminationService {
         return examinationMapper.toExaminationDtoList(examinations);
     }
 
+    /**
+     * Gives the results of a Patient
+     * @param patientId Id of the Patient
+     * @return List of String containing the results
+     * @throws EntityNotFoundException if the given Id not found
+     */
+    @Override
+    public List<String> getResults(long patientId) {
+        if(!patientService.existPatientById(patientId)) {
+            throw new EntityNotFoundException("Patient with id: " + patientId + " not found!");
+        }
+        return examinationRepository.findResultsByPatientId(patientId);
+    }
+
     private Examination getExamination(long examinationId) {
         return examinationRepository.findById(examinationId)
                 .orElseThrow(() -> new EntityNotFoundException("Examination with id: " + examinationId + " not found!"));

@@ -21,4 +21,6 @@ public interface PatientService {
     PatientDto updatePatient(Long patientId, PatientDto patientDto);
 
     PatientDto findByBirthDateAndSsn(LocalDate birthDate, String ssn);
+
+    boolean existPatientById(long patientId);
 }

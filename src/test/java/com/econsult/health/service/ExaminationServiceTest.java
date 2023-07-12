@@ -3,6 +3,7 @@ package com.econsult.health.service;
 import com.econsult.health.dto.ExaminationDto;
 import com.econsult.health.entity.Examination;
 import com.econsult.health.entity.Patient;
+import com.econsult.health.exception.EntityNotFoundException;
 import com.econsult.health.mapper.ExaminationMapper;
 import com.econsult.health.repository.ExaminationRepository;
 import com.econsult.health.service.impl.ExaminationServiceImpl;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -60,6 +62,14 @@ class ExaminationServiceTest {
         ExaminationDto result = examinationService.getExaminationById(1L);
         //then
         assertEquals(expected, result);
+    }
+
+    @Test
+    void getExaminationById_idDoesNotExist_throwsException() {
+        //given
+        //when
+        //then
+        assertThatThrownBy(() -> examinationService.getExaminationById(1L)).isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -110,6 +120,29 @@ class ExaminationServiceTest {
         List<ExaminationDto> result = examinationService.createMultipleExaminations(examinationDtos);
         //then
         assertEquals(examinationDtoList, result);
+    }
+
+    @Test
+    void getResults_existingId_returnOkAndResults() {
+        //given
+        long id = 1L;
+        List<String> expected = List.of("10", "12");
+        when(patientService.existPatientById(id)).thenReturn(true);
+        when(examinationRepository.findResultsByPatientId(id)).thenReturn(expected);
+        //when
+        List<String> result = examinationService.getResults(id);
+        //then
+        assertEquals(2, result.size());
+        assertTrue(result.contains("10"));
+        assertTrue(result.contains("12"));
+    }
+
+    @Test
+    void getResults_idDoesNotExist_throwsException() {
+        //given
+        //when
+        //then
+        assertThatThrownBy(() -> examinationService.getResults(1L)).isInstanceOf(EntityNotFoundException.class);
     }
 
     private ExaminationDto createExaminationDto(long id, long patientId,  String name) {

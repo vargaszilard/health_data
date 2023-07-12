@@ -137,6 +137,16 @@ class PatientServiceTest {
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
+    @Test
+    void existPatientById_patientExist_returnTrue() {
+        //given
+        when(patientRepository.existsById(1L)).thenReturn(true);
+        //when
+        boolean result = patientService.existPatientById(1L);
+        //then
+        assertTrue(result);
+    }
+
     private PatientDto createPatientDto(long id, String firstName, LocalDate birthDate, String ssn) {
         return PatientDto.builder()
                 .id(id)
