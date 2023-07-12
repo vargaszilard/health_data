@@ -3,6 +3,7 @@ package com.econsult.health.controller;
 import com.econsult.health.dto.ExaminationDto;
 import com.econsult.health.exception.EntityNotFoundException;
 import com.econsult.health.service.ExaminationService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +106,25 @@ class ExaminationControllerTest {
         //then
         mvc.perform(delete("/api/v1/examinations/{id}", examinationId))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void createExaminations_validExaminations_returnsOkAndExaminations() throws Exception {
+        //given
+        ExaminationDto examinationDto1 = ExaminationDto.builder().id(1L).patientId(1L).build();
+        ExaminationDto examinationDto2 = ExaminationDto.builder().id(2L).patientId(1L).build();
+        ExaminationDto[] examinationDtos = {examinationDto1, examinationDto2};
+        List<ExaminationDto> examinationDtoList = List.of(examinationDto1, examinationDto2);
+        when(examinationService.createMultipleExaminations(examinationDtos)).thenReturn(examinationDtoList);
+        //when
+        //then
+        mvc.perform(post("/api/v1/examinations/multipleExaminations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(examinationDtos)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[1].id").value(2));
     }
 
 }

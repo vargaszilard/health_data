@@ -18,4 +18,6 @@ public interface ExaminationMapper {
 
     @Mapping(target = "patient", source = "patientId")
     Examination toExamination(ExaminationDto examinationDto);
+
+    List<Examination> toExaminationList(List<ExaminationDto> examinationDtoList);
 }

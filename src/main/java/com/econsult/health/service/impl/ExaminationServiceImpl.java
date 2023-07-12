@@ -10,6 +10,7 @@ import com.econsult.health.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -78,6 +79,18 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Override
     public void deleteExamination(Long id) {
         examinationRepository.deleteById(id);
+    }
+
+    /**
+     * Saves multiple Examinations
+     * @param examinationDto Array of ExaminationDtos
+     * @return List of saved Examinations' dtos
+     */
+    @Override
+    public List<ExaminationDto> createMultipleExaminations(ExaminationDto[] examinationDto) {
+        List<Examination> examinations = examinationMapper.toExaminationList(Arrays.stream(examinationDto).toList());
+        examinations = examinationRepository.saveAll(examinations);
+        return examinationMapper.toExaminationDtoList(examinations);
     }
 
     private Examination getExamination(long examinationId) {

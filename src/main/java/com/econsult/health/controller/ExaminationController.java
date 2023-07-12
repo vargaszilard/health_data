@@ -27,7 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/examinations")
 public class ExaminationController {
-    // TODO: other operations
 
     private final ExaminationService examinationService;
 
@@ -78,6 +77,16 @@ public class ExaminationController {
     public ResponseEntity<Void> deleteExaminationById(@PathVariable Long examinationId) {
         examinationService.deleteExamination(examinationId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Add multiple examinations")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Examinations added", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ExaminationDto.class))))
+    })
+    @PostMapping("/multipleExaminations")
+    public ResponseEntity<List<ExaminationDto>> createExaminations(@RequestBody ExaminationDto... examinationDto) {
+        List<ExaminationDto> savedExaminations = examinationService.createMultipleExaminations(examinationDto);
+        return ResponseEntity.ok(savedExaminations);
     }
 
 }

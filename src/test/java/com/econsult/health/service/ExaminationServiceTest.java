@@ -93,6 +93,25 @@ class ExaminationServiceTest {
         assertEquals(updatedExaminationDto, result);
     }
 
+    @Test
+    void createMultipleExaminations_validExaminations_returnSavedExaminations() {
+        //given
+        Examination examination1 = createExamination(1L, "testName");
+        Examination examination2 = createExamination(1L, "testName");
+        ExaminationDto examinationDto1 = createExaminationDto(1L, 1L, "testName");
+        ExaminationDto examinationDto2 = createExaminationDto(1L, 1L, "testName");
+        ExaminationDto[] examinationDtos = {examinationDto1, examinationDto2};
+        List<ExaminationDto> examinationDtoList = List.of(examinationDto1, examinationDto2);
+        List<Examination> examinationList = List.of(examination1, examination2);
+        when(examinationRepository.saveAll(examinationList)).thenReturn(examinationList);
+        when(examinationMapper.toExaminationList(examinationDtoList)).thenReturn(examinationList);
+        when(examinationMapper.toExaminationDtoList(examinationList)).thenReturn(examinationDtoList);
+        //when
+        List<ExaminationDto> result = examinationService.createMultipleExaminations(examinationDtos);
+        //then
+        assertEquals(examinationDtoList, result);
+    }
+
     private ExaminationDto createExaminationDto(long id, long patientId,  String name) {
         return ExaminationDto.builder()
                 .id(id)

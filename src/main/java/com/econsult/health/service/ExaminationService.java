@@ -15,4 +15,6 @@ public interface ExaminationService {
     ExaminationDto updateExamination(Long examinationId, ExaminationDto examinationDto);
 
     void deleteExamination(Long id);
+
+    List<ExaminationDto> createMultipleExaminations(ExaminationDto[] examinationDto);
 }
