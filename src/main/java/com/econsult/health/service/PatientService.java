@@ -3,6 +3,7 @@ package com.econsult.health.service;
 import com.econsult.health.entity.Patient;
 import com.econsult.health.dto.PatientDto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface PatientService {
@@ -18,4 +19,6 @@ public interface PatientService {
     void deletePatient(Long id);
 
     PatientDto updatePatient(Long patientId, PatientDto patientDto);
+
+    PatientDto findByBirthDateAndSsn(LocalDate birthDate, String ssn);
 }

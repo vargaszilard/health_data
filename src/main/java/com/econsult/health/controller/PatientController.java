@@ -19,15 +19,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/patients")
 public class PatientController {
-    // TODO: other operations
 
     private final PatientService patientService;
 
@@ -78,5 +79,16 @@ public class PatientController {
     public ResponseEntity<Void> deletePatientById(@PathVariable Long patientId) {
         patientService.deletePatient(patientId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Get patient by 2T (Birth date and SSN")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "found patient", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PatientDto.class))),
+            @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class)))
+    })
+    @GetMapping("/twoThings")
+    public ResponseEntity<PatientDto> getPatientByBirthDateAndSsn(@RequestParam LocalDate birthDate, @RequestParam String ssn) {
+        PatientDto patientDto = patientService.findByBirthDateAndSsn(birthDate, ssn);
+        return ResponseEntity.ok(patientDto);
     }
 }

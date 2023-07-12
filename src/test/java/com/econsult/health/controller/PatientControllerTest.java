@@ -1,6 +1,7 @@
 package com.econsult.health.controller;
 
 import com.econsult.health.dto.PatientDto;
+import com.econsult.health.exception.EntityNotFoundException;
 import com.econsult.health.service.PatientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,7 +37,7 @@ class PatientControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void getAllPatients_validRequest_returnsOKAndPatients() throws Exception {
+    void getAllPatients_validRequest_returnsOKAndPatientDtos() throws Exception {
         //given
         PatientDto patientDto1 = PatientDto.builder().id(1L).build();
         PatientDto patientDto2 = PatientDto.builder().id(2L).build();
@@ -47,7 +51,7 @@ class PatientControllerTest {
     }
 
     @Test
-    void getPatientById_patientExists_returnsOKAndPatient() throws Exception {
+    void getPatientById_patientExists_returnsOKAndPatientDto() throws Exception {
         //given
         PatientDto patientDto = PatientDto.builder().id(1L).build();
         when(patientService.getPatientById(1)).thenReturn(patientDto);
@@ -59,7 +63,7 @@ class PatientControllerTest {
     }
 
     @Test
-    void createPatient_patientExists_returnsOKAndPatient() throws Exception {
+    void createPatient_patientExists_returnsOKAndPatientDto() throws Exception {
         //given
         PatientDto patientDto = PatientDto.builder().id(1L).build();
         when(patientService.createPatient(patientDto)).thenReturn(patientDto);
@@ -73,7 +77,7 @@ class PatientControllerTest {
     }
 
     @Test
-    void updatePatient_patientExists_returnsOKAndPatient() throws Exception {
+    void updatePatient_patientExists_returnsOKAndPatientDto() throws Exception {
         //given
         Long patientId = 1L;
         PatientDto updatedPatientDto = PatientDto.builder().id(1L).firstName("test").build();
@@ -84,6 +88,28 @@ class PatientControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedPatientDto)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void getPatientByBirthDateAndSsn_patientExists_returnsOKAndPatientDto() throws Exception {
+        //given
+        LocalDate birthDate = LocalDate.of(2000, 1, 1);
+        String ssn = "NA";
+        PatientDto patientDto = PatientDto.builder()
+                .id(1L)
+                .birthDate(birthDate)
+                .ssn(ssn)
+                .build();
+        when(patientService.findByBirthDateAndSsn(birthDate, ssn)).thenReturn(patientDto);
+        //when
+        //then
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/patients/twoThings")
+                        .param("birthDate", String.valueOf(birthDate))
+                        .param("ssn", ssn))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.birthDate").value(String.valueOf(birthDate)))
+                .andExpect(jsonPath("$.ssn").value(ssn));
     }
 
     @Test

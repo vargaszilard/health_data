@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,10 +34,10 @@ class PatientServiceTest {
     @Test
     void getAllPatients_patientsExist_returnPatientDtos() {
         //given
-        Patient patient1 = createPatient(1L, "testName");
-        Patient patient2 = createPatient(2L, "testName2");
-        PatientDto patientDto1 = createPatientDto(1L, "testName");
-        PatientDto patientDto2 = createPatientDto(2L, "testName2");
+        Patient patient1 = createPatient(1L, "testName", LocalDate.of(2000, 1, 1), "NA");
+        Patient patient2 = createPatient(2L, "testName2", LocalDate.of(2000, 1, 1), "NA");
+        PatientDto patientDto1 = createPatientDto(1L, "testName", LocalDate.of(2000, 1, 1), "NA");
+        PatientDto patientDto2 = createPatientDto(2L, "testName2", LocalDate.of(2000, 1, 1), "NA");
         List<Patient> patients = List.of(patient1, patient2);
         List<PatientDto> patientDtos = List.of(patientDto1, patientDto2);
         when(patientRepository.findAll()).thenReturn(patients);
@@ -51,7 +52,7 @@ class PatientServiceTest {
     @Test
     void findById_patientExists_returnPatient() {
         //given
-        Patient expectedPatient = createPatient(1L, "testName");
+        Patient expectedPatient = createPatient(1L, "testName", LocalDate.of(2000, 1, 1), "NA");
         when(patientRepository.findById(1L)).thenReturn(Optional.of(expectedPatient));
         //when
         Patient result = patientService.findById(1L);
@@ -70,8 +71,8 @@ class PatientServiceTest {
     @Test
     void getPatientById_idExists_returnPatientDto() {
         //given
-        Patient patient = createPatient(1L, "testName");
-        PatientDto expected = createPatientDto(1L, "testName");
+        Patient patient = createPatient(1L, "testName", LocalDate.of(2000, 1, 1), "NA");
+        PatientDto expected = createPatientDto(1L, "testName", LocalDate.of(2000, 1, 1), "NA");
         when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
         when(patientMapper.toPatientDto(patient)).thenReturn(expected);
         //when
@@ -83,8 +84,8 @@ class PatientServiceTest {
     @Test
     void createPatient_validPatient_returnPatientDto() {
         //given
-        Patient patient = createPatient(1L, "testName");
-        PatientDto expected = createPatientDto(1L, "testName");
+        Patient patient = createPatient(1L, "testName", LocalDate.of(2000, 1, 1), "NA");
+        PatientDto expected = createPatientDto(1L, "testName", LocalDate.of(2000, 1, 1), "NA");
         when(patientRepository.save(patient)).thenReturn(patient);
         when(patientMapper.toPatient(expected)).thenReturn(patient);
         when(patientMapper.toPatientDto(patient)).thenReturn(expected);
@@ -98,9 +99,9 @@ class PatientServiceTest {
     void updatePatient_validPatient_returnUpdatedPatient() {
         //given
         long id = 1L;
-        PatientDto updatedPatientDto = createPatientDto(id, "testNameUpdated");
-        Patient updatedPatient = createPatient(id, "testNameUpdated");
-        Patient patient = createPatient(id, "testName");
+        PatientDto updatedPatientDto = createPatientDto(id, "testNameUpdated", LocalDate.of(2000, 1, 1), "NA");
+        Patient updatedPatient = createPatient(id, "testNameUpdated", LocalDate.of(2000, 1, 1), "NA");
+        Patient patient = createPatient(id, "testName", LocalDate.of(2000, 1, 1), "NA");
         when(patientRepository.findById(id)).thenReturn(Optional.of(patient));
         when(patientRepository.save(updatedPatient)).thenReturn(updatedPatient);
         when(patientMapper.toPatientDto(updatedPatient)).thenReturn(updatedPatientDto);
@@ -110,17 +111,47 @@ class PatientServiceTest {
         assertEquals(updatedPatientDto, result);
     }
 
-    private PatientDto createPatientDto(long id, String firstName) {
+    @Test
+    void findByBirthDateAndSsn_validParams_returnPatientDto() {
+        //given
+        LocalDate birthDate = LocalDate.of(2000, 1, 1);
+        String ssn = "NA";
+        Patient patient = createPatient(1L, "testName", birthDate, ssn);
+        PatientDto patientDto = createPatientDto(1L, "testName", birthDate, ssn);
+        when(patientRepository.findByBirthDateAndSsn(birthDate, ssn)).thenReturn(Optional.of(patient));
+        when(patientMapper.toPatientDto(patient)).thenReturn(patientDto);
+        //when
+        PatientDto result = patientService.findByBirthDateAndSsn(birthDate, ssn);
+        //then
+        assertEquals(patientDto, result);
+    }
+
+    @Test
+    void findByBirthDateAndSsn_patientNotFound_throwsException() {
+        //given
+        LocalDate birthDate = LocalDate.of(2000, 1, 1);
+        String ssn = "NA";
+        //when
+        //then
+        assertThatThrownBy(() -> patientService.findByBirthDateAndSsn(birthDate, ssn))
+                .isInstanceOf(EntityNotFoundException.class);
+    }
+
+    private PatientDto createPatientDto(long id, String firstName, LocalDate birthDate, String ssn) {
         return PatientDto.builder()
                 .id(id)
                 .firstName(firstName)
+                .birthDate(birthDate)
+                .ssn(ssn)
                 .build();
     }
 
-    private Patient createPatient(long id, String firstName) {
+    private Patient createPatient(long id, String firstName, LocalDate birthDate, String ssn) {
         return Patient.builder()
                 .id(id)
                 .firstName(firstName)
+                .birthDate(birthDate)
+                .ssn(ssn)
                 .build();
     }
 }

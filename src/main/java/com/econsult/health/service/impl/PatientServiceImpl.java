@@ -9,6 +9,7 @@ import com.econsult.health.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -87,6 +88,14 @@ public class PatientServiceImpl implements PatientService {
         Patient updatedPatient = updatePatientDto(patientId, patientDto);
         updatedPatient = patientRepository.save(updatedPatient);
         return patientMapper.toPatientDto(updatedPatient);
+    }
+
+    @Override
+    public PatientDto findByBirthDateAndSsn(LocalDate birthDate, String ssn) {
+        Patient patient = patientRepository.findByBirthDateAndSsn(birthDate, ssn).orElseThrow(
+                () -> new EntityNotFoundException("Patient with BirthDate: " + birthDate + " and SSN: " + ssn + " not found")
+        );
+        return patientMapper.toPatientDto(patient);
     }
 
     private Patient updatePatientDto(Long patientId, PatientDto patientDto) {
