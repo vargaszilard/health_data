@@ -1,6 +1,8 @@
 package com.econsult.health.controller;
 
+import com.econsult.health.dto.DateResult;
 import com.econsult.health.dto.ExaminationDto;
+import com.econsult.health.dto.GrowingTendencyResponse;
 import com.econsult.health.exception.EntityNotFoundException;
 import com.econsult.health.service.ExaminationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +15,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -156,6 +163,24 @@ class ExaminationControllerTest {
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0]").value("10"))
                 .andExpect(jsonPath("$[1]").value("12"));
+    }
+
+    @Test
+    void getGrowingTendencies_existingPatient_returnsOkAndResult() throws Exception {
+        //given
+        long id = 1L;
+        List<DateResult> list = List.of(
+                new DateResult(LocalDateTime.of(2023, 1, 1, 1, 1, 1), "10"),
+                new DateResult(LocalDateTime.of(2023, 1, 2, 1, 1, 1), "12")
+        );
+        Map<String, List<DateResult>> map = new HashMap<>();
+        map.put("NA", list);
+        GrowingTendencyResponse growingTendencyResponse = new GrowingTendencyResponse(id, map);
+        when(examinationService.getTendency(id)).thenReturn(growingTendencyResponse);
+        //when
+        mvc.perform(get("/api/v1/examinations/growingTendency/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.patientId").value(1L));
     }
 
 }

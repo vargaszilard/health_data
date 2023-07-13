@@ -1,6 +1,8 @@
 package com.econsult.health.service.impl;
 
+import com.econsult.health.dto.DateResult;
 import com.econsult.health.dto.ExaminationDto;
+import com.econsult.health.dto.GrowingTendencyResponse;
 import com.econsult.health.entity.Examination;
 import com.econsult.health.exception.EntityNotFoundException;
 import com.econsult.health.mapper.ExaminationMapper;
@@ -10,8 +12,12 @@ import com.econsult.health.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This service is responsible for managing {@link Examination} related data
@@ -116,6 +122,47 @@ public class ExaminationServiceImpl implements ExaminationService {
     public List<String> getResultsByCommCode(long patientId, String commCode) {
         checkIfPatientExists(patientId);
         return examinationRepository.findResultsByPatientIdAndCommCode(patientId, commCode);
+    }
+
+    @Override
+    public GrowingTendencyResponse getTendency(long patientId) {
+        checkIfPatientExists(patientId);
+        List<Object[]> tendencies = examinationRepository.getTendencies(patientId);
+
+        Map<String, List<DateResult>> map = separateByCommCode(tendencies);
+        filterShowOnlyGrowingTendency(map);
+
+        return new GrowingTendencyResponse(patientId, map);
+    }
+
+    private void filterShowOnlyGrowingTendency(Map<String, List<DateResult>> tendencies) {
+        tendencies.values()
+                .forEach(this::removeUnnecessary);
+    }
+
+    private void removeUnnecessary(List<DateResult> results) {
+        int i = 0;
+        double result;
+
+        do {
+            result = Double.parseDouble(results.get(i).getResult());
+            i++;
+        } while (i < results.size() && Double.parseDouble(results.get(i).getResult()) > result);
+
+        results.removeAll(results.subList(i, results.size()));
+    }
+
+    private Map<String, List<DateResult>> separateByCommCode(List<Object[]> tendencies) {
+        Map<String, List<DateResult>> map = new HashMap<>();
+
+        for (Object[] row : tendencies) {
+            String commCode = (String) row[0];
+            LocalDateTime resultTime = (LocalDateTime) row[1];
+            String result = (String) row[2];
+
+            map.computeIfAbsent(commCode, k -> new ArrayList<>()).add(new DateResult(resultTime, result));
+        }
+        return map;
     }
 
     private void checkIfPatientExists(long patientId) {

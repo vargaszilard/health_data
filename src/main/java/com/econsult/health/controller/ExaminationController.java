@@ -1,9 +1,12 @@
 package com.econsult.health.controller;
 
 import com.econsult.health.dto.ExaminationDto;
+import com.econsult.health.dto.GrowingTendencyResponse;
 import com.econsult.health.exception.EntityNotFoundException;
 import com.econsult.health.service.ExaminationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,8 +33,8 @@ public class ExaminationController {
 
     private final ExaminationService examinationService;
 
-    @Operation(summary = "Get all examinations")
-    @ApiResponses(value = {
+    @Operation(summary = "Get all examinations",
+    responses = {
             @ApiResponse(responseCode = "200", description = "List of all examinations", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ExaminationDto.class))))
     })
     @GetMapping
@@ -39,18 +42,22 @@ public class ExaminationController {
         return ResponseEntity.ok(examinationService.getAllExaminations());
     }
 
-    @Operation(summary = "Get an examination by id")
-    @ApiResponses(value = {
+    @Operation(summary = "Get an examination by id",
+    responses = {
             @ApiResponse(responseCode = "200", description = "Found examination", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExaminationDto.class))),
             @ApiResponse(responseCode = "404", description = "Examination not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class)))
+    },
+    parameters = {
+            @Parameter(in = ParameterIn.PATH, name = "examinationId",
+            description = "The id of the examination to be retrieved.", required = true)
     })
     @GetMapping("/{examinationId}")
     public ResponseEntity<ExaminationDto> getExaminationById(@PathVariable long examinationId) {
         return ResponseEntity.ok(examinationService.getExaminationById(examinationId));
     }
 
-    @Operation(summary = "Add an examination")
-    @ApiResponses(value = {
+    @Operation(summary = "Add an examination",
+    responses= {
             @ApiResponse(responseCode = "200", description = "Examination added", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExaminationDto.class)))
     })
     @PostMapping
@@ -109,5 +116,16 @@ public class ExaminationController {
     public ResponseEntity<List<String>> getPatientsResultsByCommCode(@PathVariable long patientId, @PathVariable String commCode) {
         List<String> results = examinationService.getResultsByCommCode(patientId, commCode);
         return ResponseEntity.ok(results);
+    }
+
+    @Operation(summary = "Get a Patient's growing tendency to all kind of examination")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Tendencies retrieved", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GrowingTendencyResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class)))
+    })
+    @GetMapping("/growingTendency/{patientId}")
+    public ResponseEntity<GrowingTendencyResponse> getGrowingTendencies(@PathVariable long patientId) {
+        GrowingTendencyResponse tendencies = examinationService.getTendency(patientId);
+        return ResponseEntity.ok(tendencies);
     }
 }

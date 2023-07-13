@@ -1,6 +1,7 @@
 package com.econsult.health.service;
 
 import com.econsult.health.dto.ExaminationDto;
+import com.econsult.health.dto.GrowingTendencyResponse;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface ExaminationService {
     List<String> getResults(long patientId);
 
     List<String> getResultsByCommCode(long patientId, String commCode);
+
+    GrowingTendencyResponse getTendency(long patientId);
 }

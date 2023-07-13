@@ -1,6 +1,8 @@
 package com.econsult.health.service;
 
+import com.econsult.health.dto.DateResult;
 import com.econsult.health.dto.ExaminationDto;
+import com.econsult.health.dto.GrowingTendencyResponse;
 import com.econsult.health.entity.Examination;
 import com.econsult.health.entity.Patient;
 import com.econsult.health.exception.EntityNotFoundException;
@@ -13,7 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -170,6 +175,44 @@ class ExaminationServiceTest {
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
+    @Test
+    void getTendency_existingId_returnOkAndResult() {
+        //given
+        long patientId = 1L;
+        LocalDateTime time = LocalDateTime.of(2023, 1, 1, 1, 1);
+        Examination examination1 = createExaminationWithResultAndTime(1L, "NA", "10", time);
+        Examination examination2 = createExaminationWithResultAndTime(1L, "NA", "12", time.plusDays(1));
+        Object[] object1 = new Object[3];
+        object1[0] = examination1.getName();
+        object1[1] = examination1.getResultTime();
+        object1[2] = examination1.getResult();
+        Object[] object2 = new Object[3];
+        object2[0] = examination2.getName();
+        object2[1] = examination2.getResultTime();
+        object2[2] = examination2.getResult();
+        when(patientService.existPatientById(patientId)).thenReturn(true);
+        when(examinationRepository.getTendencies(patientId))
+                .thenReturn(List.of(object1, object2));
+        Map<String, List<DateResult>> map = new HashMap<>();
+        map.put("NA", List.of(new DateResult(examination1.getResultTime(), examination1.getResult()),
+                new DateResult(examination2.getResultTime(), examination2.getResult())));
+        GrowingTendencyResponse excepted = new GrowingTendencyResponse(patientId, map);
+        //when
+        GrowingTendencyResponse result = examinationService.getTendency(patientId);
+        //then
+        assertEquals(excepted, result);
+    }
+
+    @Test
+    void getTendency_idDoesNotExist_throwsException() {
+        //given
+        //when
+        //then
+        assertThatThrownBy(() -> examinationService.getTendency(1L))
+                .isInstanceOf(EntityNotFoundException.class);
+    }
+
+
     private ExaminationDto createExaminationDto(long id, long patientId,  String name) {
         return ExaminationDto.builder()
                 .id(id)
@@ -182,6 +225,15 @@ class ExaminationServiceTest {
         return Examination.builder()
                 .id(id)
                 .name(name)
+                .build();
+    }
+
+    private Examination createExaminationWithResultAndTime(long id, String name, String result, LocalDateTime resultTime) {
+        return Examination.builder()
+                .id(id)
+                .name(name)
+                .result(result)
+                .resultTime(resultTime)
                 .build();
     }
 }
