@@ -101,10 +101,27 @@ public class ExaminationServiceImpl implements ExaminationService {
      */
     @Override
     public List<String> getResults(long patientId) {
+        checkIfPatientExists(patientId);
+        return examinationRepository.findResultsByPatientId(patientId);
+    }
+
+    /**
+     * Gives the results of a Patient to a given commCode
+     * @param patientId Id of the Patient
+     * @param commCode Code of the comm
+     * @return List of String containing the results
+     * @throws EntityNotFoundException if the given Id not found
+     */
+    @Override
+    public List<String> getResultsByCommCode(long patientId, String commCode) {
+        checkIfPatientExists(patientId);
+        return examinationRepository.findResultsByPatientIdAndCommCode(patientId, commCode);
+    }
+
+    private void checkIfPatientExists(long patientId) {
         if(!patientService.existPatientById(patientId)) {
             throw new EntityNotFoundException("Patient with id: " + patientId + " not found!");
         }
-        return examinationRepository.findResultsByPatientId(patientId);
     }
 
     private Examination getExamination(long examinationId) {

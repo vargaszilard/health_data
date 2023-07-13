@@ -19,4 +19,6 @@ public interface ExaminationService {
     List<ExaminationDto> createMultipleExaminations(ExaminationDto[] examinationDto);
 
     List<String> getResults(long patientId);
+
+    List<String> getResultsByCommCode(long patientId, String commCode);
 }

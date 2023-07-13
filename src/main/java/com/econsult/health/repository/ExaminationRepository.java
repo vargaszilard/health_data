@@ -20,4 +20,13 @@ public interface ExaminationRepository extends JpaRepository<Examination, Long> 
      */
     @Query("SELECT ex.result FROM Examination ex WHERE ex.patient.id = :patientId")
     List<String> findResultsByPatientId(Long patientId);
+
+    /**
+     * Gets the results of a Patient to a commCode
+     * @param patientId Id of the patient
+     * @param commCode Code of the comm
+     * @return List of Strings contains the results
+     */
+    @Query("SELECT ex.result FROM Examination ex WHERE ex.patient.id = :patientId AND ex.commonCode = :commCode")
+    List<String> findResultsByPatientIdAndCommCode(long patientId, String commCode);
 }

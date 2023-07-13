@@ -11,11 +11,6 @@ gradle build
 java -jar ./build/libs/health_data-0.0.1-SNAPSHOT.jar
 ```
 
-## Swagger yaml file
-```
-http://localhost:8080/api-docs.yaml
-```
-
 ## Swagger UI
 ```
 http://localhost:8080/swagger-ui

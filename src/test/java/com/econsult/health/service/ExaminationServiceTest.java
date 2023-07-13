@@ -145,6 +145,31 @@ class ExaminationServiceTest {
         assertThatThrownBy(() -> examinationService.getResults(1L)).isInstanceOf(EntityNotFoundException.class);
     }
 
+    @Test
+    void getResultsByCommCode_existingId_returnOkAndResults() {
+        //given
+        long id = 1L;
+        String commCode = "com";
+        List<String> expected = List.of("10", "12");
+        when(patientService.existPatientById(id)).thenReturn(true);
+        when(examinationRepository.findResultsByPatientIdAndCommCode(id, commCode)).thenReturn(expected);
+        //when
+        List<String> result = examinationService.getResultsByCommCode(id, commCode);
+        //then
+        assertEquals(2, result.size());
+        assertTrue(result.contains("10"));
+        assertTrue(result.contains("12"));
+    }
+
+    @Test
+    void getResultsByCommCode_idDoesNotExist_throwsException() {
+        //given
+        //when
+        //then
+        assertThatThrownBy(() -> examinationService.getResultsByCommCode(1L, "com"))
+                .isInstanceOf(EntityNotFoundException.class);
+    }
+
     private ExaminationDto createExaminationDto(long id, long patientId,  String name) {
         return ExaminationDto.builder()
                 .id(id)

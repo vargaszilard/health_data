@@ -3,7 +3,6 @@ package com.econsult.health.controller;
 import com.econsult.health.dto.ExaminationDto;
 import com.econsult.health.exception.EntityNotFoundException;
 import com.econsult.health.service.ExaminationService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -125,6 +125,37 @@ class ExaminationControllerTest {
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[1].id").value(2));
+    }
+
+    @Test
+    void getPatientsResults_existingPatient_returnsOkAndResults() throws Exception {
+        //given
+        List<String> excepted = List.of("10", "12");
+        long id = 1L;
+        when(examinationService.getResults(id)).thenReturn(excepted);
+        //when
+        //then
+        mvc.perform(get("/api/v1/examinations/results/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0]").value("10"))
+                .andExpect(jsonPath("$[1]").value("12"));
+    }
+
+    @Test
+    void getPatientsResultsByCommCode_existingPatient_returnsOkAndResults() throws Exception {
+        //given
+        List<String> excepted = List.of("10", "12");
+        long id = 1L;
+        String commCode = "com";
+        when(examinationService.getResultsByCommCode(id, commCode)).thenReturn(excepted);
+        //when
+        //then
+        mvc.perform(get("/api/v1/examinations/results/{id}/{commCode}", id, commCode))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0]").value("10"))
+                .andExpect(jsonPath("$[1]").value("12"));
     }
 
 }
