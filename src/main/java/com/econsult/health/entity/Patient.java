@@ -1,7 +1,6 @@
 package com.econsult.health.entity;
 
 import com.econsult.health.entity.enums.SsnType;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -44,7 +43,7 @@ public class Patient {
     @Builder.Default
     private String ssnTypeDescription = "";
     private String mothersName;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy="patient")
+    @OneToMany(/*cascade = CascadeType.ALL,*/ fetch = FetchType.EAGER, orphanRemoval = true, mappedBy="patient")
     @Builder.Default
     private Set<Examination> examinations = new HashSet<>();
 

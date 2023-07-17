@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +47,7 @@ public class ExaminationController {
             @ApiResponse(responseCode = "404", description = "Examination not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class)))
     },
     parameters = {
-            @Parameter(in = ParameterIn.PATH, name = "examinationId",
-            description = "The id of the examination to be retrieved.", required = true)
+            @Parameter(in = ParameterIn.PATH, name = "examinationId", description = "The id of the examination to be retrieved.", required = true)
     })
     @GetMapping("/{examinationId}")
     public ResponseEntity<ExaminationDto> getExaminationById(@PathVariable long examinationId) {
@@ -60,25 +58,33 @@ public class ExaminationController {
     responses= {
             @ApiResponse(responseCode = "200", description = "Examination added", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExaminationDto.class)))
     })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "ExaminationDto to be saved", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExaminationDto.class)))
     @PostMapping
     public ResponseEntity<ExaminationDto> createExamination(@RequestBody ExaminationDto examinationDto) {
         ExaminationDto savedExamination = examinationService.createExamination(examinationDto);
         return ResponseEntity.ok(savedExamination);
     }
 
-    @Operation(summary = "Update an examination")
-    @ApiResponses(value = {
+    @Operation(summary = "Update an examination",
+    responses = {
             @ApiResponse(responseCode = "200", description = "Examination updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExaminationDto.class)))
+    },
+    parameters = {
+            @Parameter(in = ParameterIn.PATH, name = "examinationId", description = "The id of the examination to be updated.", required = true)
     })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "ExaminationDto how to be updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExaminationDto.class)))
     @PutMapping("/{examinationId}")
     public ResponseEntity<ExaminationDto> updateExamination(@PathVariable Long examinationId, @RequestBody ExaminationDto examinationDto) {
         ExaminationDto updatedExaminationDto = examinationService.updateExamination(examinationId, examinationDto);
         return new ResponseEntity<>(updatedExaminationDto, HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete an examination")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Examination deleted")
+    @Operation(summary = "Delete an examination",
+    responses = {
+            @ApiResponse(responseCode = "204", description = "Examination deleted")
+    },
+    parameters = {
+            @Parameter(in = ParameterIn.PATH, name = "examinationId", description = "The id of the examination to be deleted.", required = true)
     })
     @DeleteMapping("/{examinationId}")
     public ResponseEntity<Void> deleteExaminationById(@PathVariable Long examinationId) {
@@ -86,20 +92,24 @@ public class ExaminationController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Add multiple examinations")
-    @ApiResponses(value = {
+    @Operation(summary = "Add multiple examinations",
+    responses = {
             @ApiResponse(responseCode = "200", description = "Examinations added", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ExaminationDto.class))))
     })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "ExaminationDto or Dtos to be saved", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExaminationDto.class)))
     @PostMapping("/multipleExaminations")
     public ResponseEntity<List<ExaminationDto>> createExaminations(@RequestBody ExaminationDto... examinationDto) {
         List<ExaminationDto> savedExaminations = examinationService.createMultipleExaminations(examinationDto);
         return ResponseEntity.ok(savedExaminations);
     }
 
-    @Operation(summary = "Get a Patient's all results")
-    @ApiResponses(value = {
+    @Operation(summary = "Get a Patient's all results",
+    responses = {
             @ApiResponse(responseCode = "200", description = "Results retireved", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class)))),
             @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class)))
+    },
+    parameters = {
+            @Parameter(in = ParameterIn.PATH, name = "patientId", description = "The id of the Patient whose results to be retrieved.", required = true)
     })
     @GetMapping("/results/{patientId}")
     public ResponseEntity<List<String>> getPatientsResults(@PathVariable long patientId) {
@@ -107,10 +117,14 @@ public class ExaminationController {
         return ResponseEntity.ok(results);
     }
 
-    @Operation(summary = "Get a Patient's all results by comm code")
-    @ApiResponses(value = {
+    @Operation(summary = "Get a Patient's all results by comm code",
+    responses = {
             @ApiResponse(responseCode = "200", description = "Results retireved", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class)))),
             @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class)))
+    },
+    parameters = {
+            @Parameter(in = ParameterIn.PATH, name = "patientId", description = "The id of the Patient whose results to be retrieved.", required = true),
+            @Parameter(in = ParameterIn.PATH, name = "commCode", description = "The CommCode of the Examination.", required = true)
     })
     @GetMapping("/results/{patientId}/{commCode}")
     public ResponseEntity<List<String>> getPatientsResultsByCommCode(@PathVariable long patientId, @PathVariable String commCode) {
@@ -118,10 +132,13 @@ public class ExaminationController {
         return ResponseEntity.ok(results);
     }
 
-    @Operation(summary = "Get a Patient's growing tendency to all kind of examination")
-    @ApiResponses(value = {
+    @Operation(summary = "Get a Patient's growing tendency to all kind of examination",
+    responses = {
             @ApiResponse(responseCode = "200", description = "Tendencies retrieved", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GrowingTendencyResponse.class))),
             @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class)))
+    },
+    parameters = {
+            @Parameter(in = ParameterIn.PATH, name = "patientId", description = "The id of the Patient whose tendencies to retrieve.", required = true)
     })
     @GetMapping("/growingTendency/{patientId}")
     public ResponseEntity<GrowingTendencyResponse> getGrowingTendencies(@PathVariable long patientId) {

@@ -124,12 +124,18 @@ public class ExaminationServiceImpl implements ExaminationService {
         return examinationRepository.findResultsByPatientIdAndCommCode(patientId, commCode);
     }
 
+    /**
+     * Get all growing tendency to a Patient (results with time till it shows growing tendency)
+     * @param patientId Id of the Patient whose results to be retrieved
+     * @return See {@link GrowingTendencyResponse} class
+     * @throws EntityNotFoundException if the given Id not found
+     */
     @Override
     public GrowingTendencyResponse getTendency(long patientId) {
         checkIfPatientExists(patientId);
         List<Object[]> tendencies = examinationRepository.getTendencies(patientId);
 
-        Map<String, List<DateResult>> map = separateByCommCode(tendencies);
+        Map<String, List<DateResult>> map = separateByName(tendencies);
         filterShowOnlyGrowingTendency(map);
 
         return new GrowingTendencyResponse(patientId, map);
@@ -141,18 +147,23 @@ public class ExaminationServiceImpl implements ExaminationService {
     }
 
     private void removeUnnecessary(List<DateResult> results) {
-        int i = 0;
-        double result;
+        try {
+            int i = 0;
+            double result = 0;
 
-        do {
-            result = Double.parseDouble(results.get(i).getResult());
-            i++;
-        } while (i < results.size() && Double.parseDouble(results.get(i).getResult()) > result);
+            do {
+                result = Double.parseDouble(results.get(i).getResult());
+                i++;
+            } while (i < results.size() && Double.parseDouble(results.get(i).getResult()) > result);
 
-        results.removeAll(results.subList(i, results.size()));
+            results.removeAll(results.subList(i, results.size()));
+        } catch (NumberFormatException ignored){
+            results.clear();
+        }
+
     }
 
-    private Map<String, List<DateResult>> separateByCommCode(List<Object[]> tendencies) {
+    private Map<String, List<DateResult>> separateByName(List<Object[]> tendencies) {
         Map<String, List<DateResult>> map = new HashMap<>();
 
         for (Object[] row : tendencies) {

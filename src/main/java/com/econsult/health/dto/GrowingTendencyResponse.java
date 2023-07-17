@@ -9,6 +9,9 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents growing tendencies grouped by name
+ */
 @Getter
 @Setter
 @AllArgsConstructor

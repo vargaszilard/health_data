@@ -33,7 +33,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     /**
-     * Returns one Patient with the given id
+     * Returns a Patient with the given id
      * @param id id of the Patient
      * @return a Patient with the given id
      * @throws EntityNotFoundException if the patient with id does not exist
@@ -90,6 +90,13 @@ public class PatientServiceImpl implements PatientService {
         return patientMapper.toPatientDto(updatedPatient);
     }
 
+    /**
+     * Return a Patient with the given BirthDate and SSN
+     * @param birthDate BirthDate of the Patient
+     * @param ssn SSN of the Patient
+     * @return The found Patient
+     * @throws EntityNotFoundException if the Patient with the given BirthDate and SSN not found
+     */
     @Override
     public PatientDto findByBirthDateAndSsn(LocalDate birthDate, String ssn) {
         Patient patient = patientRepository.findByBirthDateAndSsn(birthDate, ssn).orElseThrow(
@@ -98,6 +105,11 @@ public class PatientServiceImpl implements PatientService {
         return patientMapper.toPatientDto(patient);
     }
 
+    /**
+     * Return if a Patient with the given ID exists
+     * @param patientId ID of the Patient
+     * @return true if the Patient exists, false if it does not
+     */
     @Override
     public boolean existPatientById(long patientId) {
         return patientRepository.existsById(patientId);

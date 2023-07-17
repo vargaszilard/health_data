@@ -8,6 +8,9 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
+/**
+ * This DTO exists to store the Result, ResultTime pairs
+ */
 @Getter
 @Setter
 @AllArgsConstructor
