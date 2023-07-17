@@ -13,5 +13,5 @@ java -jar ./build/libs/health_data-0.0.1-SNAPSHOT.jar
 
 ## Swagger UI
 ```
-http://localhost:8080/swagger-ui
+http://localhost:8080/swagger-ui/index.html
 ```
